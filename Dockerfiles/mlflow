@@ -1,0 +1,23 @@
+FROM ubuntu:latest
+
+USER root
+ENV DEBIAN_FRONTEND="noninteractive" \
+    MLFLOW_TRACKING_INSECURE_TLS="true" \
+    MLFLOW_S3_IGNORE_TLS=true
+LABEL maintainer="ugur.ustaoglu@yahoo.com" Name="mlflow"
+
+
+RUN apt-get update
+RUN apt install -y --no-install-recommends python3-pip
+
+COPY requirements.txt .
+RUN  python3 -m pip install -r requirements.txt --upgrade
+
+
+
+WORKDIR "/home/mlflow"
+USER  mlflow
+
+# Defining start up command
+EXPOSE 5000
+ENTRYPOINT ["mlflow", "server"]
